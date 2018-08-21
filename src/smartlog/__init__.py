@@ -54,7 +54,7 @@ class Loggable(object):
 
 	@property
 	def logger(self):
-		if __logger is None:
+		if self.__logger is None:
 			self.__logger = self.get_logger()
 		return self.__logger
 	
