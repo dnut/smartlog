@@ -29,7 +29,8 @@ def get_traceback(exception=None):
 
 def log_exceptions(reraise=True, exit_patterns=None):
 	"""Decorator factory."""
-	raise_regex = re.compile('|'.join(['({})'.format(i) for i in exit_patterns]))
+	if exit_patterns is not None:
+		raise_regex = re.compile('|'.join(['({})'.format(i) for i in exit_patterns]))
 	def decorator(f):
 		"""Actual decorator. Log exceptions raised by decorated function."""
 		fname = f.__name__
@@ -40,7 +41,7 @@ def log_exceptions(reraise=True, exit_patterns=None):
 			except Exception as e:
 				logger = logging.getLogger('{}.{}'.format(f.__module__, f.__name__))
 				log_exception(e, logger, fatal=reraise)
-				if reraise or raise_regex.match(repr(e).lower()):
+				if reraise or (exit_patterns is not None and raise_regex.match(repr(e).lower())):
 					raise
 				return e
 		new_f.__name__ = fname
