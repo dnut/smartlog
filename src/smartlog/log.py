@@ -61,9 +61,9 @@ class Loggable(object):
 	def get_logger(cls, method=''):
 		return logging.getLogger('.'.join([cls.__name__, method]).rstrip('.'))
 
-	def log_exception(self, e, logger=None, prefix=''):
+	def log_exception(self, e, logger=None, prefix='', critical=False):
 		logger = self.logger if logger is None else logger
-		log_exception(e, logger, prefix)
+		log_exception(e, logger, prefix, critical)
 
 
 try:
