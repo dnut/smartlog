@@ -32,7 +32,6 @@ def log_exceptions(reraise=True, exit_patterns=None, critical=False):
 		raise_regex = re.compile('|'.join(['({})'.format(i) for i in exit_patterns]))
 	def decorator(f):
 		"""Actual decorator. Log exceptions raised by decorated function."""
-		fname = f.__name__
 		def new_f(*args, **kwargs):
 			"""New version of function that is logged."""
 			try:
@@ -43,7 +42,7 @@ def log_exceptions(reraise=True, exit_patterns=None, critical=False):
 				if reraise or (exit_patterns is not None and raise_regex.match(repr(e).lower())):
 					raise
 				return e
-		new_f.__name__ = fname
+		new_f.__name__ = f.__name__
 		return new_f
 	return decorator
 
