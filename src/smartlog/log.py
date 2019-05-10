@@ -4,11 +4,11 @@ import re
 import traceback
 
 
-def log_exception(e, logger=None, prefix='', fatal=False):
+def log_exception(e, logger=None, prefix='', critical=False):
 	"""sends full traceback to ERROR"""
 	if not logger:
 		logger = logging.getLogger('{}'.format(__name__))
-	log_method = logger.critical if fatal else logger.error
+	log_method = logger.critical if critical else logger.error
 	log_method('{}: {}'.format(prefix, verbose_exception(e)).lstrip(': '))
 
 
@@ -26,7 +26,7 @@ def get_traceback(exception=None):
 	return tb
 
 
-def log_exceptions(reraise=True, exit_patterns=None):
+def log_exceptions(reraise=True, exit_patterns=None, critical=False):
 	"""Decorator factory."""
 	if exit_patterns is not None:
 		raise_regex = re.compile('|'.join(['({})'.format(i) for i in exit_patterns]))
@@ -39,7 +39,7 @@ def log_exceptions(reraise=True, exit_patterns=None):
 				return f(*args, **kwargs)
 			except Exception as e:
 				logger = logging.getLogger('{}.{}'.format(f.__module__, f.__name__))
-				log_exception(e, logger, fatal=reraise)
+				log_exception(e, logger, critical=critical)
 				if reraise or (exit_patterns is not None and raise_regex.match(repr(e).lower())):
 					raise
 				return e
